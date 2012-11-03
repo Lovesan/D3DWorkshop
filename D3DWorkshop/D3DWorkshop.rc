@@ -1,0 +1,44 @@
+#include <windows.h>
+#include "Resource.h"
+#include "D3DW.h"
+
+CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST "D3DWorkshop.manifest"
+
+IDI_DX_ICON ICON "directx.ico"
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION D3DW_MAJOR_VERSION,D3DW_MINOR_VERSION,D3DW_REVISION,D3DW_BUILD
+ PRODUCTVERSION D3DW_MAJOR_VERSION,D3DW_MINOR_VERSION,D3DW_REVISION,D3DW_BUILD
+ FILEFLAGSMASK 0x3F
+#if defined(DEBUG) || defined(_DEBUG)
+ FILEFLAGS 1
+#else
+ FILEFLAGS 0
+#endif // DEBUG || _DEBUG
+ FILEOS VOS__WINDOWS32
+ FILETYPE VFT_DLL
+ FILESUBTYPE 0
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904B0"
+        BEGIN
+            VALUE "CompanyName", "Dmitry Ignatiev\0"
+            VALUE "FileDescription", "Direct3D Workshop\0"
+            VALUE "FileVersion", D3DW_VERSION_STRING
+            VALUE "InternalName", "D3DWorkshop\0"
+            VALUE "LegalCopyright", "Copyright © 2012, Dmitry Ignatiev <lovesan.ru at gmail.com>\0"
+#if defined(DEBUG) || defined(_DEBUG)
+            VALUE "OriginalFilename", "D3DWd.dll\0"
+#else
+            VALUE "OriginalFilename", "D3DW.dll\0"
+#endif // DEBUG || _DEBUG
+            VALUE "ProductName", "Direct3D Workshop\0"
+            VALUE "ProductVersion", D3DW_VERSION_STRING
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END

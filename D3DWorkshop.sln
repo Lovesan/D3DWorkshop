@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual C++ Express 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "D3DWorkshop", "D3DWorkshop\D3DWorkshop.vcxproj", "{2603830D-611C-4605-A370-F26D1E6DF12D}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "D3DWTriangleExample", "D3DWTriangleExample\D3DWTriangleExample.vcxproj", "{1C72073C-33B0-414A-A0CB-9865FB7F1799}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2603830D-611C-4605-A370-F26D1E6DF12D} = {2603830D-611C-4605-A370-F26D1E6DF12D}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2603830D-611C-4605-A370-F26D1E6DF12D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2603830D-611C-4605-A370-F26D1E6DF12D}.Debug|Win32.Build.0 = Debug|Win32
+		{2603830D-611C-4605-A370-F26D1E6DF12D}.Release|Win32.ActiveCfg = Release|Win32
+		{2603830D-611C-4605-A370-F26D1E6DF12D}.Release|Win32.Build.0 = Release|Win32
+		{1C72073C-33B0-414A-A0CB-9865FB7F1799}.Debug|Win32.ActiveCfg = Debug|Win32
+		{1C72073C-33B0-414A-A0CB-9865FB7F1799}.Debug|Win32.Build.0 = Debug|Win32
+		{1C72073C-33B0-414A-A0CB-9865FB7F1799}.Release|Win32.ActiveCfg = Release|Win32
+		{1C72073C-33B0-414A-A0CB-9865FB7F1799}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

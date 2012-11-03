@@ -1,0 +1,30 @@
+* 2D drawing API is a TODO, although it would be easy to implement
+
+* Get rid of D3DCompiler dependency and implement binary format for effects
+
+* Users should be able to map textures and depth-stencil resources
+
+* Save textures to file
+
+* Add buffer resources
+
+* Texture arrays?
+
+* Add support for stream output
+
+* D3DWFloatAnimation handles inverse ranges somewhat improperly
+   and requires a fix
+
+* Add more animation types
+
+* Direct3D 11 features (tesselation etc.)
+
+* More examples
+
+* C-style interface for D3DW.h
+
+* .NET interface
+
+* Static library
+
+* Redesign some parts of the library to be able to work with WinRT(Metro)

@@ -1,0 +1,4 @@
+LIBRARY "D3DWd.dll"
+
+EXPORTS
+    D3DWCreateWindow
