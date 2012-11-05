@@ -1,2 +1,7 @@
+* v0.1.1.1
+  Added infrastructure for building library as SxS assembly.
+  Added files needed to build MSI installer package.
+  Minor bugfix in D3DWEffect.cpp
+
 * v0.1.0.0 
   Initial release

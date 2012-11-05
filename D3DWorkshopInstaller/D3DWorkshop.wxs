@@ -1,0 +1,156 @@
+<?xml version='1.0' encoding="utf-8" ?>
+<?define ProductName="Direct3D Workshop" ?>
+<?define UpgradeCode="{9F3E0D63-8FD3-4DE3-9A10-712291B66329}" ?>
+<?define MajorVersion="1" ?>
+<?define MinorVersion="0" ?>
+<?define BuildVersion="1" ?>
+<?define Revision="1" ?>
+<?define VersionNumber="$(var.MajorVersion).$(var.MinorVersion).$(var.BuildVersion).$(var.Revision)" ?>
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
+   <Product Id='{F11442BB-8331-4B43-961E-20F4DD9F889B}'
+            Name="$(var.ProductName)"
+            Language='1033'
+            Version="$(var.VersionNumber)"
+            Manufacturer='Dmitry Ignatiev'
+            UpgradeCode="$(var.UpgradeCode)">
+     <Package Keywords='MSI,Installer'
+              Description='Direct3D workshop installer package'
+              Comments='Direct3D Workshop, 2D/3D graphics micro-framework.'
+              Manufacturer='Dmitry Ignatiev'
+              InstallerVersion='300'
+              Compressed='yes'
+              InstallPrivileges='elevated'
+              InstallScope='perMachine' />
+     <Media Id='1' Cabinet="D3DW.cab" EmbedCab='yes' />
+     <Upgrade Id="$(var.UpgradeCode)">
+       <UpgradeVersion OnlyDetect="yes"
+                       Minimum="$(var.VersionNumber)"
+                       IncludeMinimum='no'
+                       Property="NEWER_VERSION_FOUND"/>
+       <UpgradeVersion Minimum="0.0.0.0"
+                       IncludeMinimum="yes"
+                       Maximum="$(var.VersionNumber)"
+                       IncludeMaximum='no'
+                       Property="OLDER_VERSION_FOUND"/>
+     </Upgrade>
+     <CustomAction Id="NewerVersionFound" Error="Newer version of $(var.ProductName) is already installed" />
+     <InstallExecuteSequence>
+       <Custom Action="NewerVersionFound" After="FindRelatedProducts">
+         <![CDATA[NEWER_VERSION_FOUND]]>
+       </Custom>
+       <RemoveExistingProducts After="InstallInitialize"/>
+     </InstallExecuteSequence>
+     <WixVariable Id="WixUILicenseRtf" Value="../COPYRIGHT.rtf"/>
+     <UIRef Id="WixUI_Mondo"/>
+     <UIRef Id="WixUI_ErrorProgressText" />
+     <Icon Id="DirectX.ico" SourceFile="../../D3DWorkshop/directx.ico" />
+     <Property Id="ARPPRODUCTICON" Value="DirectX.ico" />
+     <Directory Id='TARGETDIR' Name='SourceDir'>
+       <Directory Id="ProgramFilesFolder">
+         <Directory Id="INSTALLLOCATION" Name="$(var.ProductName)">
+           <Component Id="D3DW_dll_shared"
+                      Guid='{D1229467-C036-48F0-8D68-CC8F151986DF}'>
+             <File Id="D3DW.dll_shared"
+                   Source="../../Bin/D3DW.dll"
+                   Vital="yes"
+                   KeyPath="yes"
+                   Assembly="win32"
+                   AssemblyManifest="D3DW.manifest" />
+             <File Source="D3DW.manifest"
+                   Vital="yes"/>
+             <File Source="D3DW.cat"
+                   Vital="yes"/>
+           </Component>
+           <Component Id="D3DWd_dll_shared"
+                      Guid='{671BC122-3763-417A-A80F-35FA58D67145}'>
+             <File Id="D3DWd.dll_shared"
+                   Source="../../Bin/D3DWd.dll"
+                   Vital="yes"
+                   KeyPath="yes"
+                   Assembly="win32"
+                   AssemblyManifest="D3DWd.manifest" />
+             <File Source="D3DWd.manifest"
+                   Vital="yes"/>
+             <File Source="D3DWd.cat"
+                   Vital="yes"/>
+           </Component>           
+           <Directory Id="D3DW_Bin" Name="Bin">
+             <Component Id="D3DW_dll"
+                        Guid="{C86DCFD4-2576-4555-9981-D6C1825F829F}">
+               <File Source="../../Bin/D3DW.dll"
+                     Vital="yes"
+                     KeyPath="yes"/>
+               <RemoveFolder Id="D3DW_Bin" On="uninstall" />
+             </Component>
+             <Component Id="D3DWd_dll"
+                        Guid="{9D735FEF-FA47-4E7F-9D02-412D6954BB46}">
+               <File Source="../../Bin/D3DWd.dll"
+                     Vital="yes"
+                     KeyPath="yes"/>
+             </Component>
+             <Component Id="D3DWExamples"
+                        Guid="{1118B409-6E1E-44A6-A794-E7641FD24927}">
+               <File Source="../../Bin/D3DWTriangleExample.exe"
+                     Vital="yes"
+                     KeyPath="yes"/>
+             </Component>
+           </Directory>
+           <Directory Id="D3DW_Lib"
+                      Name="Lib">
+             <Component Id="D3DW_Libs"
+                        Guid='{5FCE1E04-7A87-4122-B9A1-82DCE332E97E}'>
+               <File Source="../../Bin/D3DW.lib"
+                     Vital="yes"
+                     KeyPath="yes"/>
+               <File Source="../../Bin/D3DW.exp"
+                     Vital="yes"/>    
+               <RemoveFolder Id="D3DW_Lib" On="uninstall"/>
+             </Component>
+             <Component Id="D3DWd_Libs"
+                        Guid='{0D433DC7-0CF4-4757-AF13-F2B7CDB150FB}'>
+               <File Source="../../Bin/D3DWd.lib"
+                     Vital="yes"
+                     KeyPath="yes"/>
+               <File Source="../../Bin/D3DWd.exp"
+                     Vital="yes"/>
+             </Component>
+           </Directory>         
+           <Directory Id="D3DW_Include"
+                      Name="Include">
+             <Component Id="D3DW_Headers"
+                        Guid="{9215139D-C90B-4800-87D3-8FD26D3C1B12}">
+               <File Source="../../D3DWorkshop/D3DW.h"
+                     Vital="yes"
+                     KeyPath="yes"/>
+               <RemoveFolder Id="D3DW_Include" On="uninstall"/>
+             </Component>
+           </Directory>
+         </Directory>
+       </Directory>
+     </Directory>     
+     <Feature Id="D3DW_feature" Title="Direct3D Workshop core" Level="1"
+              ConfigurableDirectory="INSTALLLOCATION"
+              Display="expand">
+       <ComponentRef Id="D3DW_dll_shared" />
+       <ComponentRef Id="D3DW_dll" />
+       <Feature Id="D3DW_lib_headers_feature" Title="Libraries and headers" Level="1"
+                Display="expand">
+         <ComponentRef Id="D3DW_Libs"/>
+         <ComponentRef Id="D3DW_Headers" />
+       </Feature>
+     </Feature>
+     <Feature Id="D3DWd_feature" Title="Debug libraries" Level="2"
+              Display="expand">
+       <ComponentRef Id="D3DWd_dll_shared"/>
+       <ComponentRef Id="D3DWd_dll" />
+       <ComponentRef Id="D3DWd_Libs" />
+       <ComponentRef Id="D3DW_Headers" />
+     </Feature>
+     <Feature Id="D3DW_examples_feature" Title="Examples" Level="2"
+              Display="expand">
+       <ComponentRef Id="D3DWExamples"/>
+     </Feature>
+     <Property Id="WIXUI_INSTALLDIR" Value="INSTALLLOCATION" />
+   </Product>
+</Wix>
+

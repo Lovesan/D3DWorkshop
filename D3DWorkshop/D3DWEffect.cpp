@@ -416,15 +416,18 @@ HRESULT D3DWEffect::InitCbuffers(ID3D11ShaderReflection *reflect, std::vector<D3
     {
       std::string resName(srd.Name);
       std::map<std::string,ResourceVar*>::iterator it = _allRes.find(resName);
+      ResourceVar *rv = NULL;
       if(it == _allRes.end())
       {
-        ResourceVar *rv = new ResourceVar();
+        rv = new (std::nothrow) ResourceVar();
+        if(!rv)
+          return E_OUTOFMEMORY;
         rv->slot = srd.BindPoint;
         rv->dim = srd.Dimension;
-        UINT n = res.size();
-        res.push_back(rv);        
+        UINT n = res.size();  
         _allRes[resName] = rv;
       }
+      res.push_back(rv);
     }    
   }
   return S_OK;

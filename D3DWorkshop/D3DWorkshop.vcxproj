@@ -43,6 +43,8 @@
     <LibraryPath>$(DXSDK_DIR)\Lib\x86;$(WINSDK_DIR)\Lib;$(LibraryPath)</LibraryPath>
     <TargetName>D3DWd</TargetName>
     <OutDir>$(SolutionDir)\Bin\</OutDir>
+    <GenerateManifest>false</GenerateManifest>
+    <ExecutablePath>$(WINSDK_DIR)\Bin;$(VCInstallDir)bin;$(WindowsSdkDir)bin\NETFX 4.0 Tools;$(WindowsSdkDir)bin;$(VSInstallDir)Common7\Tools\bin;$(VSInstallDir)Common7\tools;$(VSInstallDir)Common7\ide;$(ProgramFiles)\HTML Help Workshop;$(FrameworkSDKDir)\bin;$(MSBuildToolsPath32);$(VSInstallDir);$(SystemRoot)\SysWow64;$(FxCopDir);$(PATH);</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>$(DXSDK_DIR)\Include;$(WINSDK_DIR)\Include;$(IncludePath)</IncludePath>
@@ -51,6 +53,8 @@
     <LibraryPath>$(DXSDK_DIR)\Lib\x86;$(WINSDK_DIR)\Lib;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)\Bin\</OutDir>
     <TargetName>D3DW</TargetName>
+    <GenerateManifest>false</GenerateManifest>
+    <ExecutablePath>$(WINSDK_DIR)\Bin;$(VCInstallDir)bin;$(WindowsSdkDir)bin\NETFX 4.0 Tools;$(WindowsSdkDir)bin;$(VSInstallDir)Common7\Tools\bin;$(VSInstallDir)Common7\tools;$(VSInstallDir)Common7\ide;$(ProgramFiles)\HTML Help Workshop;$(FrameworkSDKDir)\bin;$(MSBuildToolsPath32);$(VSInstallDir);$(SystemRoot)\SysWow64;$(FxCopDir);$(PATH);</ExecutablePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -68,6 +72,18 @@
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;DEBUG;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
+    <Manifest />
+    <ManifestResourceCompile />
+    <CustomBuild />
+    <CustomBuild />
+    <CustomBuildStep>
+      <Command>
+      </Command>
+    </CustomBuildStep>
+    <PostBuildEvent>
+      <Command>cd "$(OutDir)" &amp;&amp; signtool sign /f "../D3DWorkshop/D3DW.pfx" /d "Direct3D Workshop" /du http://github.com/Lovesan/D3DWorkshop /t http://timestamp.verisign.com/scripts/timstamp.dll "$(TargetFileName)"</Command>
+      <Message>Sign assembly</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -89,6 +105,17 @@
       <ModuleDefinitionFile>$(TargetName).def</ModuleDefinitionFile>
       <AssemblyDebug>false</AssemblyDebug>
     </Link>
+    <Manifest />
+    <ManifestResourceCompile />
+    <CustomBuild />
+    <CustomBuildStep>
+      <Command>cd "$(OutDir)" &amp;&amp; mt -nologo -updateresource:"$(OutDir)\$(TargetName)$(TargetExt)";#2 -hashupdate</Command>
+      <Message>Update manifest hashes</Message>
+    </CustomBuildStep>
+    <PostBuildEvent>
+      <Command>cd "$(OutDir)" &amp;&amp; signtool sign /f "../D3DWorkshop/D3DW.pfx" /d "Direct3D Workshop" /du http://github.com/Lovesan/D3DWorkshop /t http://timestamp.verisign.com/scripts/timstamp.dll "$(TargetFileName)"</Command>
+      <Message>Sign assembly</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="D3DWWindow.cpp" />
@@ -123,7 +150,16 @@
     <ResourceCompile Include="D3DWorkshop.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Manifest Include="D3DWorkshop.manifest" />
+    <None Include="D3DW.manifest">
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">cd "$(OutDir)" &amp;&amp; mt -nologo -updateresource:"$(OutDir)\$(TargetName)$(TargetExt)";#2 -hashupdate</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)\$(TargetName)$(TargetExt)</Outputs>
+    </None>
+    <None Include="D3DW.pfx" />
+    <None Include="D3DWd.manifest">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)\$(TargetName)$(TargetExt)</Outputs>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="D3DW.def" />

@@ -5,9 +5,9 @@
 
 #define D3DW_MAJOR_VERSION 0
 #define D3DW_MINOR_VERSION 1
-#define D3DW_REVISION 0
-#define D3DW_BUILD 0
-#define D3DW_VERSION_STRING "0.1.0.0"
+#define D3DW_BUILD 1
+#define D3DW_REVISION 1
+#define D3DW_VERSION_STRING "0.1.1.1"
 
 #ifdef __cplusplus
 #define D3DW_EXTERN_C extern "C" extern

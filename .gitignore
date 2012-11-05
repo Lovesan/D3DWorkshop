@@ -14,8 +14,11 @@
 *.sdf
 *.opensdf
 *.xdc
+*.cdf
+*.cat
 ipch
 Bin
+D3DWorkshopInstaller/Tmp
 D3DWorkshop/Debug
 D3DWorkshop/Release
 D3DWTriangleExample/Debug

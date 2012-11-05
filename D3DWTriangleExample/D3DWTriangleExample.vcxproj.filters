@@ -25,8 +25,11 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Manifest Include="D3DWTriangleExample.manifest">
+    <None Include="D3DWTriangleExample.manifest">
       <Filter>Resource Files</Filter>
-    </Manifest>
+    </None>
+    <None Include="D3DWTriangleExampled.manifest">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

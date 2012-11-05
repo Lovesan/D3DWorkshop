@@ -15,13 +15,13 @@
       </requestedPrivileges>
     </security>
   </trustInfo>
-  <file name="D3DWTriangleExample.exe" />
+  <file name="D3DWTriangleExampled.exe" />
   <dependency>
     <dependentAssembly>
         <assemblyIdentity
 	        version="0.1.1.1"
 	        processorArchitecture="x86"
-	        name="D3DW"
+	        name="D3DWd"
 	        type="win32"
             language="*"
             publicKeyToken="e20c7f9c8c6e8707" />

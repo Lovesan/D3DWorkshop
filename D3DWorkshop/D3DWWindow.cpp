@@ -3,7 +3,7 @@
 #include "D3DWWindow.hpp"
 #include "D3DWContext.hpp"
 
-HMODULE D3DWWindow::_moduleHandle = NULL;
+HMODULE D3DWWindow::_moduleHandle = GetModuleHandle(NULL);
 
 D3DWWindow::D3DWWindow()
 {
@@ -551,7 +551,9 @@ HRESULT D3DWWindow::Initialize(UINT width, UINT height, INT x, INT y, HWND paren
   wc.cbSize = sizeof(wc);  
   wc.hInstance = GetModuleHandle(NULL);
   wc.hCursor = LoadCursor(NULL, MAKEINTRESOURCE(IDC_ARROW));
-  wc.hIcon = LoadIcon(_moduleHandle, MAKEINTRESOURCE(IDI_DX_ICON));
+  wc.hIcon = LoadIcon(_moduleHandle, MAKEINTRESOURCE(IDI_MAIN_ICON));
+  if(!wc.hIcon)
+    wc.hIcon = LoadIcon(NULL, MAKEINTRESOURCE(IDI_APPLICATION));
   wc.lpfnWndProc = WindowProc;
   _className = L"D3DWorkshop_";
   for(int i = 0; i<10; ++i)

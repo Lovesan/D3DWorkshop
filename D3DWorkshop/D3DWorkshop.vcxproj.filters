@@ -99,11 +99,6 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Manifest Include="D3DWorkshop.manifest">
-      <Filter>Resource Files</Filter>
-    </Manifest>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="directx.ico">
       <Filter>Resource Files</Filter>
     </None>
@@ -111,6 +106,15 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="D3DWd.def">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="D3DWd.manifest">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="D3DW.manifest">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="D3DW.pfx">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

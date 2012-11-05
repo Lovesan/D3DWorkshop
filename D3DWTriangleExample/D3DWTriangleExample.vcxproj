@@ -43,11 +43,13 @@
     <LibraryPath>$(SolutionDir)\Bin;$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(WindowsSdkDir)lib;$(FrameworkSDKDir)\lib</LibraryPath>
     <TargetName>$(ProjectName)d</TargetName>
     <OutDir>$(SolutionDir)\Bin\</OutDir>
+    <GenerateManifest>false</GenerateManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>$(SolutionDir)\D3DWorkshop;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;</IncludePath>
     <LibraryPath>$(SolutionDir)\Bin;$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(WindowsSdkDir)lib;$(FrameworkSDKDir)\lib</LibraryPath>
     <OutDir>$(SolutionDir)\Bin\</OutDir>
+    <GenerateManifest>false</GenerateManifest>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -60,6 +62,19 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>D3DWd.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <ManifestResourceCompile />
+    <Manifest />
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;DEBUG;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <CustomBuild />
+    <CustomBuild />
+    <PostBuildEvent>
+      <Command>cd "$(OutDir)" &amp;&amp; signtool sign /f "../D3DWorkshop/D3DW.pfx" /d "Direct3D Workshop" /du http://github.com/Lovesan/D3DWorkshop /t http://timestamp.verisign.com/scripts/timstamp.dll "$(TargetFileName)"</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Sign assembly</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -69,7 +84,6 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>true</OmitFramePointers>
     </ClCompile>
@@ -79,6 +93,16 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>D3DW.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <ManifestResourceCompile />
+    <Manifest />
+    <CustomBuild />
+    <CustomBuild />
+    <PostBuildEvent>
+      <Command>cd "$(OutDir)" &amp;&amp; signtool sign /f "../D3DWorkshop/D3DW.pfx" /d "Direct3D Workshop" /du http://github.com/Lovesan/D3DWorkshop /t http://timestamp.verisign.com/scripts/timstamp.dll "$(TargetFileName)"</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Sign assembly</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="D3DWTriangleExample.cpp" />
@@ -87,7 +111,10 @@
     <ResourceCompile Include="D3DWTriangleExample.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Manifest Include="D3DWTriangleExample.manifest" />
+    <None Include="D3DWTriangleExample.manifest" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="D3DWTriangleExampled.manifest" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
