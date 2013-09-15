@@ -1,5 +1,6 @@
 #include <cstdlib>
 #include <new>
+#include <windows.h>
 #include "../D3DWorkshop/ComUtils.hpp"
 #include "../D3DWorkshop/D3DW.h"
 
@@ -141,7 +142,7 @@ private:
       0, 1, 2,
     };
     V_HR(_ctx->CreateMesh(
-      vertices, sizeof(FLOAT)*6, 3, indices, 3, D3DW_TOPOLOGY_TRIANGLE, FALSE, &_mesh));
+      vertices, sizeof(FLOAT)*6, 3, indices, 3, D3DW_TOPOLOGY_TRIANGLE, &_mesh));
 
     V_HR(_wnd->SetRenderMode(FALSE, TRUE));
 

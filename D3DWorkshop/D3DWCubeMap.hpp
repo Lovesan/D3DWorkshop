@@ -14,16 +14,19 @@ class D3DWContext;
 class D3DWTexture;
 #endif // __D3DWTEXTURE_DEFINED__
 
-class D3DWCubeMap :
+class COM_NO_VTABLE D3DWCubeMap :
   public ID3DWCubeMap,
-  public ID3DWTextureInternals
+  public ID3DWCubeMapInternals
 {
 public:
-  BEGIN_INTERFACE_MAP
-    INTERFACE_MAP_ENTRY(ID3DWCubeMap)
-    INTERFACE_MAP_ENTRY(ID3DWResource)
+  BEGIN_INTERFACE_MAP    
     INTERFACE_MAP_ENTRY(ID3DWContextChild)
-    INTERFACE_MAP_ENTRY(ID3DWTextureInternals)
+    INTERFACE_MAP_ENTRY(ID3DWResource)
+    INTERFACE_MAP_ENTRY(ID3DWCubeMap)
+    INTERFACE_MAP_ENTRY(ID3DWResourceInternals)
+    INTERFACE_MAP_ENTRY(ID3DWShaderResourceInternals)
+    INTERFACE_MAP_ENTRY(ID3DWRenderTargetInternals)
+    INTERFACE_MAP_ENTRY(ID3DWCubeMapInternals)
   END_INTERFACE_MAP
   
   static HRESULT Create(
@@ -37,16 +40,11 @@ public:
     D3DWCubeMap **oCubeMap);
   virtual ~D3DWCubeMap();
 
-  STDMETHODIMP GetRgbaData(UINT width, UINT height, LPVOID oData);
-  STDMETHODIMP Lock3D();
-  STDMETHODIMP Unlock3D();
-  STDMETHODIMP Lock2D();
-  STDMETHODIMP Unlock2D();
-  STDMETHODIMP GetFormat(DXGI_FORMAT *oFormat);
   STDMETHODIMP GetRes(ID3D11Resource **oRes);
   STDMETHODIMP GetSrv(ID3D11ShaderResourceView **oSrv);
+  STDMETHODIMP GetRtv(ID3D11RenderTargetView **oRtv);
   STDMETHODIMP SetAsTarget();
-  STDMETHODIMP Clear(FLOAT clearColor[4]);
+  STDMETHODIMP Clear(const FLOAT clearColor[4]);
   STDMETHODIMP ClearDepthStencil();
   STDMETHODIMP GetContext(ID3DWContext **oCtx);
   STDMETHODIMP GetByteSize(SIZE_T *oSize);

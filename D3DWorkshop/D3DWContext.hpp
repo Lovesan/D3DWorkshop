@@ -41,21 +41,25 @@ class COM_NO_VTABLE D3DWContext :
 public:
   BEGIN_INTERFACE_MAP    
     INTERFACE_MAP_ENTRY(ID3DWContext)
+    INTERFACE_MAP_ENTRY(ID3DWResourceInternals)
+    INTERFACE_MAP_ENTRY(ID3DWShaderResourceInternals)
+    INTERFACE_MAP_ENTRY(ID3DWRenderTargetInternals)
     INTERFACE_MAP_ENTRY(ID3DWContextInternals)
   END_INTERFACE_MAP
 
   static HRESULT WINAPI Create(HWND hwnd, D3DWWindow *window, D3DWContext **oContext);
   virtual ~D3DWContext();
     
+  STDMETHODIMP GetRes(ID3D11Resource **oRes);
+  STDMETHODIMP GetSrv(ID3D11ShaderResourceView **oSrv);
+  STDMETHODIMP GetRtv(ID3D11RenderTargetView **oRtv);
+  STDMETHODIMP SetAsTarget();
   STDMETHODIMP GetSwapChain(IDXGISwapChain **oSwc);
   STDMETHODIMP Present();
   STDMETHODIMP GetWindow(ID3DWWindow **oWindow);
   STDMETHODIMP GetSize(UINT *oWidth, UINT *oHeight);
   STDMETHODIMP SetSize(UINT width, UINT height);
-  STDMETHODIMP GetAnisotropyLevel(UINT *oLevel);
-  STDMETHODIMP SetAnisotropyLevel(UINT level);
-  STDMETHODIMP SetAsTarget();
-  STDMETHODIMP Clear(FLOAT clearColor[4]);
+  STDMETHODIMP Clear(const FLOAT clearColor[4]);
   STDMETHODIMP ClearDepthStencil();
   STDMETHODIMP CreateEffectFromMemory(
     LPCSTR data, SIZE_T size, LPCSTR vsEntry, LPCSTR gsEntry, LPCSTR psEntry, ID3DWEffect **oEffect);
@@ -63,6 +67,9 @@ public:
     LPCWSTR filename, LPCSTR vsEntry, LPCSTR gsEntry, LPCSTR psEntry, ID3DWEffect **oEffect);
   STDMETHODIMP CreateEffectFromResource(
     HMODULE module, LPCWSTR resourceType, LPCWSTR resourceName, LPCSTR vsEntry, LPCSTR gsEntry, LPCSTR psEntry, ID3DWEffect **oEffect);
+  STDMETHODIMP CreateSampler(
+    UINT anisotropyLevel, D3DW_TEXTURE_MODE addressMode, const FLOAT borderColor[4], ID3DWSampler **oSampler);
+  STDMETHODIMP CreateConstantBuffer(SIZE_T size, ID3DWConstantBuffer **oConstantBuffer);
   STDMETHODIMP CreateTexture(
     UINT width, UINT height, ID3DWTexture **oTex);
   STDMETHODIMP CreateTextureFromMemory(
@@ -80,7 +87,7 @@ public:
     ID3DWTexture *negZ,
     ID3DWCubeMap **oCubeMap);
   STDMETHODIMP CreateMesh(
-    LPVOID vertexData, SIZE_T vertexSize, UINT nVertices, UINT32 *indices, UINT nIndices, D3DW_TOPOLOGY topology, BOOL canMap, ID3DWMesh **oMesh);
+    LPVOID vertexData, SIZE_T vertexSize, UINT nVertices, UINT32 *indices, UINT nIndices, D3DW_TOPOLOGY topology, ID3DWMesh **oMesh);
   STDMETHODIMP CreateFloatAnimation(
     FLOAT begin, FLOAT end, FLOAT interval, BOOL repeat, BOOL autoReverse, ID3DWFloatAnimation **oAnimation);
 
@@ -103,9 +110,9 @@ private:
   ComPtr<IDXGISwapChain> _swc;
   ComPtr<ID3D10Device1> _device10;
   ComPtr<ID3D11RenderTargetView> _rtv;
+  ComPtr<ID3D11ShaderResourceView> _srv;
   ComPtr<ID3D11DepthStencilView> _dsv;
   D3D11_VIEWPORT _vp;
-  ComPtr<ID3D11SamplerState> _sampler;
   UINT _afLevel;
     
   D3DWContext(const D3DWContext& copy);

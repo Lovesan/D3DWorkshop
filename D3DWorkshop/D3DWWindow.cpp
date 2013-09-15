@@ -31,6 +31,26 @@ D3DWWindow::~D3DWWindow()
   }
 }
 
+STDMETHODIMP D3DWWindow::Render()
+{  
+  HRESULT hr = S_OK;
+  if(!_alive)
+    return HRESULT_FROM_WIN32(ERROR_INVALID_STATE);
+  if(!_resizing || !_pauseOnResize)
+  {
+    int nEvents = _events.size();
+    for(int i = 0; i<nEvents; ++i)
+    {
+      hr = _events[i]->OnRender();
+      if(FAILED(hr))
+        break;
+    }
+  }
+  if(SUCCEEDED(hr))
+    hr = _context->Present();
+  return hr;
+}
+
 void D3DWWindow::OnLoaded()
 {
   if(!_alive)
@@ -52,15 +72,7 @@ void D3DWWindow::OnClosed()
 
 void D3DWWindow::OnRender()
 {
-  if(!_alive)
-    return;
-  if(!_resizing || !_pauseOnResize)
-  {
-    int nEvents = _events.size();
-    for(int i = 0; i<nEvents; ++i)
-      _events[i]->OnRender();
-  }
-  _context->Present();
+  Render();
 }
 
 void D3DWWindow::OnResize()

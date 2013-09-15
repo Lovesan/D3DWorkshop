@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding="utf-8" ?>
 <?define ProductName="Direct3D Workshop" ?>
 <?define UpgradeCode="{9F3E0D63-8FD3-4DE3-9A10-712291B66329}" ?>
-<?define MajorVersion="1" ?>
-<?define MinorVersion="0" ?>
-<?define BuildVersion="1" ?>
-<?define Revision="1" ?>
+<?define MajorVersion="0" ?>
+<?define MinorVersion="2" ?>
+<?define BuildVersion="0" ?>
+<?define Revision="0" ?>
 <?define VersionNumber="$(var.MajorVersion).$(var.MinorVersion).$(var.BuildVersion).$(var.Revision)" ?>
 <Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
    <Product Id='{F11442BB-8331-4B43-961E-20F4DD9F889B}'
@@ -93,6 +93,8 @@
                <File Source="../../Bin/D3DWTriangleExample.exe"
                      Vital="yes"
                      KeyPath="yes"/>
+               <File Source="../../Bin/D3DWDrawToSurfaceExample.exe"
+                     Vital="yes"/>
              </Component>
            </Directory>
            <Directory Id="D3DW_Lib"

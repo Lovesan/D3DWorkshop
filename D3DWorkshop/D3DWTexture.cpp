@@ -206,11 +206,11 @@ STDMETHODIMP D3DWTexture::GetSize(UINT *oWidth, UINT *oHeight)
 
 STDMETHODIMP D3DWTexture::GetSurface(ID3DWSurface **oSurface)
 {
-  if(!_canDraw)
-    return HRESULT_FROM_WIN32(ERROR_NOT_SUPPORTED);
   if(!oSurface)
     return E_POINTER;
-  *oSurface = NULL;
+  *oSurface = NULL;  
+  if(!_canDraw)
+    return HRESULT_FROM_WIN32(ERROR_NOT_SUPPORTED);
   _surface->AddRef();
   *oSurface = _surface;
   return S_OK;
@@ -225,7 +225,7 @@ STDMETHODIMP D3DWTexture::SetAsTarget()
   return S_OK;
 }
 
-STDMETHODIMP D3DWTexture::Clear(FLOAT clearColor[4])
+STDMETHODIMP D3DWTexture::Clear(const FLOAT clearColor[4])
 {
   if(!_canDraw)
     return HRESULT_FROM_WIN32(ERROR_NOT_SUPPORTED);
@@ -268,6 +268,18 @@ STDMETHODIMP D3DWTexture::GetSrv(ID3D11ShaderResourceView **oSrv)
   *oSrv = NULL;
   _srv->AddRef();
   *oSrv = _srv;
+  return S_OK;
+}
+
+STDMETHODIMP D3DWTexture::GetRtv(ID3D11RenderTargetView **oRtv)
+{
+  if(!oRtv)
+    return E_POINTER;
+  *oRtv = NULL;  
+  if(!_canDraw)
+    return HRESULT_FROM_WIN32(ERROR_INVALID_STATE);
+  _rtv->AddRef();
+  *oRtv = _rtv;
   return S_OK;
 }
 

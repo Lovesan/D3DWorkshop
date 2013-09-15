@@ -23,7 +23,11 @@ class COM_NO_VTABLE D3DWTexture :
 public:
   BEGIN_INTERFACE_MAP
     INTERFACE_MAP_ENTRY(ID3DWContextChild)
+    INTERFACE_MAP_ENTRY(ID3DWResource)
     INTERFACE_MAP_ENTRY(ID3DWTexture)
+    INTERFACE_MAP_ENTRY(ID3DWResourceInternals)
+    INTERFACE_MAP_ENTRY(ID3DWShaderResourceInternals)
+    INTERFACE_MAP_ENTRY(ID3DWRenderTargetInternals)
     INTERFACE_MAP_ENTRY(ID3DWTextureInternals)
   END_INTERFACE_MAP
 
@@ -47,8 +51,9 @@ public:
   STDMETHODIMP GetFormat(DXGI_FORMAT *oFormat);
   STDMETHODIMP GetRes(ID3D11Resource **oRes);
   STDMETHODIMP GetSrv(ID3D11ShaderResourceView **oSrv);
+  STDMETHODIMP GetRtv(ID3D11RenderTargetView **oRtv);
   STDMETHODIMP SetAsTarget();
-  STDMETHODIMP Clear(FLOAT clearColor[4]);
+  STDMETHODIMP Clear(const FLOAT clearColor[4]);
   STDMETHODIMP ClearDepthStencil();
   STDMETHODIMP GetContext(ID3DWContext **oCtx);
   STDMETHODIMP GetByteSize(SIZE_T *oSize);

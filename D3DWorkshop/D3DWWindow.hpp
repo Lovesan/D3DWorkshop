@@ -25,6 +25,7 @@ public:
   static HRESULT SetModuleHandle(HMODULE module);
   virtual ~D3DWWindow();
 
+  STDMETHODIMP Render();
   STDMETHODIMP AddEventSink(ID3DWWindowEvents *events);
   STDMETHODIMP RemoveEventSink(ID3DWWindowEvents *events);
   STDMETHODIMP GetRenderMode(BOOL *oRenderAlways, BOOL *oPauseOnResize);

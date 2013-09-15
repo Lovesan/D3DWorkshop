@@ -11,39 +11,6 @@ D3DWCubeMap::~D3DWCubeMap()
 {
 }
 
-STDMETHODIMP D3DWCubeMap::GetRgbaData(UINT width, UINT height, LPVOID oData)
-{
-  return E_NOTIMPL;
-}
-
-STDMETHODIMP D3DWCubeMap::Lock3D()
-{
-  return S_FALSE;
-}
-
-STDMETHODIMP D3DWCubeMap::Unlock3D()
-{
-  return S_FALSE;
-}
-
-STDMETHODIMP D3DWCubeMap::Lock2D()
-{
-  return S_FALSE;
-}
-
-STDMETHODIMP D3DWCubeMap::Unlock2D()
-{
-  return S_FALSE;
-}
-
-STDMETHODIMP D3DWCubeMap::GetFormat(DXGI_FORMAT *oFormat)
-{
-  if(!oFormat)
-    return E_POINTER;
-  *oFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
-  return S_OK;
-}
-
 STDMETHODIMP D3DWCubeMap::GetRes(ID3D11Resource **oRes)
 {
   if(!oRes)
@@ -64,6 +31,16 @@ STDMETHODIMP D3DWCubeMap::GetSrv(ID3D11ShaderResourceView **oSrv)
   return S_OK;
 }
 
+STDMETHODIMP D3DWCubeMap::GetRtv(ID3D11RenderTargetView **oRtv)
+{
+  if(!oRtv)
+    return E_POINTER;
+  *oRtv = NULL;
+  _rtv->AddRef();
+  *oRtv = _rtv;
+  return S_OK;
+}
+
 STDMETHODIMP D3DWCubeMap::SetAsTarget()
 {
   _dc->OMSetRenderTargets(1, _rtv.AddressOf(), _dsv);
@@ -71,7 +48,7 @@ STDMETHODIMP D3DWCubeMap::SetAsTarget()
   return S_OK;
 }
 
-STDMETHODIMP D3DWCubeMap::Clear(FLOAT clearColor[4])
+STDMETHODIMP D3DWCubeMap::Clear(const FLOAT clearColor[4])
 {
   if(!clearColor)
     return E_POINTER;

@@ -2,7 +2,7 @@
 <assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0"
 	xmlns:asmv3="urn:schemas-microsoft-com:asm.v3">
     <assemblyIdentity
-	    version="0.1.1.1"
+	    version="0.2.0.0"
 	    processorArchitecture="x86"
 	    name="D3DWTriangleExample"
 	    type="win32"
@@ -19,7 +19,7 @@
   <dependency>
     <dependentAssembly>
         <assemblyIdentity
-	        version="0.1.1.1"
+	        version="0.2.0.0"
 	        processorArchitecture="x86"
 	        name="D3DWd"
 	        type="win32"

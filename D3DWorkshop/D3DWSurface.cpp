@@ -53,7 +53,7 @@ STDMETHODIMP D3DWSurface::EndDraw()
   return hr;
 }
 
-STDMETHODIMP D3DWSurface::Clear(FLOAT clearColor[4])
+STDMETHODIMP D3DWSurface::Clear(const FLOAT clearColor[4])
 {
   HRESULT hr;
   if(!_drawing)

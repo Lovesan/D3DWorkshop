@@ -20,6 +20,7 @@
 #include <cstring>
 #include <cstdio>
 #include <new>
+#include <memory>
 #include <vector>
 #include <string>
 #include <map>
@@ -36,7 +37,7 @@
 #include <d3d10.h>
 #include <dxgi.h>
 #include <d3dcompiler.h>
-#include <xnamath.h>
+#include <DirectXMath.h>
 #include <d2d1.h>
 #include <d2derr.h>
 #include "Resource.h"

@@ -2,6 +2,8 @@
 #include "D3DWContext.hpp"
 #include "D3DWWindow.hpp"
 #include "D3DWEffect.hpp"
+#include "D3DWSampler.hpp"
+#include "D3DWConstantBuffer.hpp"
 #include "D3DWMesh.hpp"
 #include "D3DWTexture.hpp"
 #include "D3DWCubeMap.hpp"
@@ -56,7 +58,7 @@ HRESULT D3DWContext::Initialize(HWND hwnd, D3DWWindow *window)
 
   DXGI_SWAP_CHAIN_DESC sd = {0};
   sd.BufferCount = 2;
-  sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+  sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT | DXGI_USAGE_SHADER_INPUT;
   sd.Windowed = TRUE;
   sd.Flags = 0;
   sd.OutputWindow = hwnd;
@@ -156,9 +158,7 @@ HRESULT D3DWContext::Initialize(HWND hwnd, D3DWWindow *window)
   _vp.TopLeftY = 0;  
 
   V_HR(RecreateTargets(width, height));
-
-  V_HR(SetAnisotropyLevel(0));
-
+  
   V_HR_ASSERT(_wic.CoCreateInstance(CLSID_WICImagingFactory), "Unable to create WIC imaging factory");
   
   D2D1_FACTORY_OPTIONS fo;
@@ -173,6 +173,7 @@ HRESULT D3DWContext::Initialize(HWND hwnd, D3DWWindow *window)
 
 HRESULT D3DWContext::RecreateTargets(UINT width, UINT height)
 {
+  _srv.Release();
   _rtv.Release();
   _dsv.Release();
 
@@ -182,6 +183,7 @@ HRESULT D3DWContext::RecreateTargets(UINT width, UINT height)
 
   ComPtr<ID3D11Texture2D> backBuffer;
   V_HR_ASSERT(_swc->GetBuffer(0, IID_PPV_ARGS(&backBuffer)), "Unable to obtain back buffer");
+  V_HR_ASSERT(_device->CreateShaderResourceView(backBuffer, NULL, &_srv), "Unable to create SRV");
   V_HR_ASSERT(_device->CreateRenderTargetView(backBuffer, NULL, &_rtv), "Unable to create RTV");
   backBuffer.Release();
 
@@ -229,52 +231,7 @@ STDMETHODIMP D3DWContext::SetAsTarget()
   return S_OK;
 }
 
-STDMETHODIMP D3DWContext::GetAnisotropyLevel(UINT *oLevel)
-{
-  if(!oLevel)
-    return E_POINTER;
-  *oLevel = _afLevel;
-  return S_OK;
-}
-  
-STDMETHODIMP D3DWContext::SetAnisotropyLevel(UINT level)
-{
-  HRESULT hr;
-  if(_afLevel == level)
-    return S_OK;
-  if(0 != level && 2 != level && 4 != level && 8 != level && 16 != level)
-    return E_INVALIDARG;
-  D3D11_SAMPLER_DESC sd;
-  SecureZeroMemory(&sd, sizeof(sd));
-  sd.AddressU = sd.AddressV = sd.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-  sd.ComparisonFunc = D3D11_COMPARISON_LESS;
-  sd.MipLODBias = 0;
-  sd.MinLOD = 0;
-  sd.MaxLOD = D3D11_FLOAT32_MAX;
-  if(0 == level)
-  {
-    sd.MaxAnisotropy = 0;
-    sd.Filter = D3D11_FILTER_COMPARISON_MIN_MAG_MIP_LINEAR;
-  }
-  else
-  {
-    sd.MaxAnisotropy = level;
-    sd.Filter = D3D11_FILTER_COMPARISON_ANISOTROPIC;
-  }
-  ComPtr<ID3D11SamplerState> sampler;
-  hr = _device->CreateSamplerState(&sd, &sampler);
-  if(SUCCEEDED(hr))
-  {
-    _dc->VSSetSamplers(0, 1, sampler.AddressOf());
-    _dc->GSSetSamplers(0, 1, sampler.AddressOf());
-    _dc->PSSetSamplers(0, 1, sampler.AddressOf());
-    _sampler = sampler;
-    _afLevel = level;
-  }
-  return hr;
-}
-
-STDMETHODIMP D3DWContext::Clear(FLOAT clearColor[4])
+STDMETHODIMP D3DWContext::Clear(const FLOAT clearColor[4])
 {
   if(!clearColor)
     return E_POINTER;
@@ -344,6 +301,39 @@ HRESULT D3DWContext::Get2DFactory(ID2D1Factory **oFactory)
   return S_OK;
 }
 
+STDMETHODIMP D3DWContext::GetRes(ID3D11Resource **oRes)
+{
+  HRESULT hr;
+  if(!oRes)
+    return E_POINTER;
+  *oRes = NULL;
+  ComPtr<ID3D11Texture2D> backBuffer;
+  V_HR(_swc->GetBuffer(0, IID_PPV_ARGS(&backBuffer)));
+  backBuffer->AddRef();
+  *oRes = backBuffer;
+  return S_OK;
+}
+
+STDMETHODIMP D3DWContext::GetSrv(ID3D11ShaderResourceView **oSrv)
+{
+  if(!oSrv)
+    return E_POINTER;
+  *oSrv = NULL;
+  _srv->AddRef();
+  *oSrv = _srv;
+  return S_OK;
+}
+
+STDMETHODIMP D3DWContext::GetRtv(ID3D11RenderTargetView **oRtv)
+{
+  if(!oRtv)
+    return E_POINTER;
+  *oRtv = NULL;
+  _rtv->AddRef();
+  *oRtv = _rtv;
+  return S_OK;
+}
+
 STDMETHODIMP D3DWContext::GetSwapChain(IDXGISwapChain **oSwc)
 {
   if(!oSwc)
@@ -400,6 +390,31 @@ STDMETHODIMP D3DWContext::CreateEffectFromResource(
   HRESULT hr = D3DWEffect::CreateFromResource(module, resourceType, resourceName, vsEntry, gsEntry, psEntry, this, &effect);
   V_HR(hr);
   *oEffect = effect;
+  return S_OK;
+}
+
+STDMETHODIMP D3DWContext::CreateSampler(
+    UINT anisotropyLevel, D3DW_TEXTURE_MODE addressMode, const FLOAT borderColor[4], ID3DWSampler **oSampler)
+{
+  if(!oSampler)
+    return E_POINTER;
+  *oSampler = NULL;
+  D3DWSampler *sampler = NULL;
+  HRESULT hr = D3DWSampler::Create(anisotropyLevel, addressMode, borderColor, this, &sampler);
+  V_HR(hr);
+  *oSampler = sampler;
+  return S_OK;
+}
+
+STDMETHODIMP D3DWContext::CreateConstantBuffer(SIZE_T size, ID3DWConstantBuffer **oConstantBuffer)
+{
+  if(!oConstantBuffer)
+    return E_POINTER;
+  *oConstantBuffer = NULL;
+  D3DWConstantBuffer *cb = NULL;
+  HRESULT hr = D3DWConstantBuffer::Create(size, this, &cb);
+  V_HR(hr);
+  *oConstantBuffer = cb;
   return S_OK;
 }
 
@@ -475,13 +490,13 @@ STDMETHODIMP D3DWContext::CreateCubeMap(
 }
 
 STDMETHODIMP D3DWContext::CreateMesh(
-  LPVOID vertexData, SIZE_T vertexSize, UINT nVertices, UINT32 *indices, UINT nIndices, D3DW_TOPOLOGY topology, BOOL canMap, ID3DWMesh **oMesh)
+  LPVOID vertexData, SIZE_T vertexSize, UINT nVertices, UINT32 *indices, UINT nIndices, D3DW_TOPOLOGY topology, ID3DWMesh **oMesh)
 {
   if(!oMesh)
     return E_POINTER;
   *oMesh = NULL;
   D3DWMesh *mesh = NULL;
-  HRESULT hr = D3DWMesh::Create(vertexData, vertexSize, nVertices, indices, nIndices, topology, canMap, this, &mesh);
+  HRESULT hr = D3DWMesh::Create(vertexData, vertexSize, nVertices, indices, nIndices, topology, this, &mesh);
   V_HR(hr);
   *oMesh = mesh;
   return S_OK;

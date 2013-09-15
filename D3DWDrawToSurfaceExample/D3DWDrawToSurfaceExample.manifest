@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0"
+	xmlns:asmv3="urn:schemas-microsoft-com:asm.v3">
+    <assemblyIdentity
+	    version="0.2.0.0"
+	    processorArchitecture="x86"
+	    name="D3DWDrawToSurfaceExample"
+	    type="win32"
+        publicKeyToken="e20c7f9c8c6e8707" />
+  <description>Direct3D Workshop draw to surface example</description>
+  <trustInfo xmlns="urn:schemas-microsoft-com:asm.v2">
+    <security>
+      <requestedPrivileges>
+        <requestedExecutionLevel level="asInvoker" uiAccess="false"/>
+      </requestedPrivileges>
+    </security>
+  </trustInfo>
+  <file name="D3DWDrawToSurfaceExample.exe" />
+  <dependency>
+    <dependentAssembly>
+        <assemblyIdentity
+	        version="0.2.0.0"
+	        processorArchitecture="x86"
+	        name="D3DW"
+	        type="win32"
+            language="*"
+            publicKeyToken="e20c7f9c8c6e8707" />
+    </dependentAssembly>
+  </dependency>
+  <dependency>    
+    <dependentAssembly>
+      <assemblyIdentity type="Win32" name="Microsoft.Windows.Common-Controls" version="6.0.0.0"
+                        processorArchitecture="x86" publicKeyToken="6595b64144ccf1df" language="*"/>
+    </dependentAssembly>
+  </dependency>
+</assembly>
+

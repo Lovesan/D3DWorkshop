@@ -3,41 +3,45 @@
 
 #include <windows.h>
 #include <d3d11.h>
-#include <d3dcompiler.h>
+#include "ComUtils.hpp"
 #include "D3DW.h"
+#include "D3DWInternals.hpp"
 
-#ifndef __D3DWEFFECT_DEFINED__
-class D3DWEffect;
-#endif // __D3DWEFFECT_DEFINED__
+#ifndef __D3DWCONTEXT_DEFINED__
+class D3DWContext;
+#endif // __D3DWCONTEXT_DEFINED__
 
-class COM_NO_VTABLE D3DWConstantBuffer : public ID3DWConstantBuffer
+class COM_NO_VTABLE D3DWConstantBuffer :
+  public ID3DWConstantBuffer,
+  public ID3DWConstantBufferInternals
 {
 public:
   BEGIN_INTERFACE_MAP
     INTERFACE_MAP_ENTRY(ID3DWConstantBuffer)
+    INTERFACE_MAP_ENTRY(ID3DWResourceInternals)
+    INTERFACE_MAP_ENTRY(ID3DWConstantBufferInternals)
   END_INTERFACE_MAP
 
-  static HRESULT Create(UINT slot, ID3D11ShaderReflectionConstantBuffer *reflect, D3DWEffect *effect, D3DWConstantBuffer **oCb);
+  static HRESULT Create(SIZE_T size, D3DWContext *ctx, D3DWConstantBuffer **oCb);
   virtual ~D3DWConstantBuffer();
-
-  HRESULT GetBuffer(ID3D11Buffer **oBuffer);
-  HRESULT GetSlot(UINT *oSlot);
-
-  STDMETHODIMP GetEffect(ID3DWEffect **oEffect);
-  STDMETHODIMP GetSize(SIZE_T *oSize);
+  
+  STDMETHODIMP GetRes(ID3D11Resource **oRes);
+  STDMETHODIMP GetCb(ID3D11Buffer **oCb);
+  STDMETHODIMP GetContext(ID3DWContext **oCtx);
+  STDMETHODIMP GetByteSize(SIZE_T *oSize);
   STDMETHODIMP Update(LPVOID data, SIZE_T size);
 
 protected:  
   D3DWConstantBuffer();
 
 private:
-  D3DWEffect *_effect;
-  UINT _size;
-  LPCSTR _name;
-  UINT _slot;
+  ComPtr<D3DWContext> _ctx;
+  ComPtr<ID3D11Device> _device;
+  ComPtr<ID3D11DeviceContext> _dc;
   ComPtr<ID3D11Buffer> _buffer;
+  SIZE_T _size;
   
-  HRESULT Initialize(UINT reg, ID3D11ShaderReflectionConstantBuffer *reflect, D3DWEffect *effect);
+  HRESULT Initialize(SIZE_T size, D3DWContext *ctx);
 };
 
 #define __D3DWCONSTANT_BUFFER_DEFINED__

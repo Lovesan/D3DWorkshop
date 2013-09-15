@@ -30,7 +30,7 @@ public:
   STDMETHODIMP GetSize(UINT *oWIdth, UINT *oHeight);
   STDMETHODIMP BeginDraw();
   STDMETHODIMP EndDraw();
-  STDMETHODIMP Clear(FLOAT clearColor[4]);
+  STDMETHODIMP Clear(const FLOAT clearColor[4]);
   STDMETHODIMP ClearDepthStencil();
 
 protected:

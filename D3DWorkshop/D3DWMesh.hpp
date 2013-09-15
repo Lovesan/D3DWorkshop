@@ -24,7 +24,7 @@ public:
   END_INTERFACE_MAP
 
   static HRESULT Create(
-    LPVOID vertexData, SIZE_T vertexSize, UINT nVertices, UINT32 *indices, UINT nIndices, D3DW_TOPOLOGY topology, BOOL canMap, D3DWContext *ctx, D3DWMesh **oMesh);
+    LPVOID vertexData, SIZE_T vertexSize, UINT nVertices, UINT32 *indices, UINT nIndices, D3DW_TOPOLOGY topology, D3DWContext *ctx, D3DWMesh **oMesh);
   virtual ~D3DWMesh();
 
   STDMETHODIMP GetContext(ID3DWContext **oCtx);
@@ -32,6 +32,7 @@ public:
   STDMETHODIMP GetVertexCount(UINT *oCount);
   STDMETHODIMP GetIndexCount(UINT *oCount);
   STDMETHODIMP Draw(ID3DWEffect *effect);
+  STDMETHODIMP DrawToBuffer(ID3DWEffect *effect, ID3DWBuffer *buffer);
   STDMETHODIMP DrawToSurface(ID3DWEffect *effect, ID3DWSurface *surface);
   STDMETHODIMP DrawToCubeMap(ID3DWEffect *effect, ID3DWCubeMap *cubeMap);
   STDMETHODIMP MapVertices(LPVOID *oVertexData);
@@ -52,15 +53,14 @@ private:
   ComPtr<ID3D11Buffer> _ib;
   UINT _nIndices;
   D3D11_PRIMITIVE_TOPOLOGY _topology;
-  BOOL _canMap;
   BOOL _vbMapped;
   ComPtr<ID3D11Buffer> _mappedVb;
   BOOL _ibMapped;
   ComPtr<ID3D11Buffer> _mappedIb;
 
   HRESULT Initialize(
-    LPVOID vertexData, SIZE_T vertexSize, UINT nVertices, UINT32 *indices, UINT nIndices, D3DW_TOPOLOGY topology, BOOL canMap, D3DWContext *ctx);
-  HRESULT DrawToTextureInternals(ID3DWEffect *effect, ID3DWTextureInternals *texInternals);
+    LPVOID vertexData, SIZE_T vertexSize, UINT nVertices, UINT32 *indices, UINT nIndices, D3DW_TOPOLOGY topology, D3DWContext *ctx);
+  HRESULT DrawToRenderTargetInternals(ID3DWEffect *effect, ID3DWRenderTargetInternals *rtInternals);
 };
 
 #define __D3DWMESH_DEFINED__

@@ -38,53 +38,70 @@ public:
     HMODULE module, LPCWSTR resourceName, LPCWSTR resourceType, LPCSTR vsEntry, LPCSTR gsEntry, LPCSTR psEntry,
     D3DWContext *ctx, D3DWEffect **oEffect);
   virtual ~D3DWEffect();
-
-  HRESULT GetDevice(ID3D11Device **oDevice);
-  HRESULT GetDc(ID3D11DeviceContext **oDc);
-
-  STDMETHODIMP GetContext(ID3DWContext **oCtx);
+  
   STDMETHODIMP Apply();
-  STDMETHODIMP LockTextures(ID3DWTextureInternals *output);
-  STDMETHODIMP UnlockTextures();
-  STDMETHODIMP GetConstantBuffer(LPCSTR name, ID3DWConstantBuffer **oCb);
-  STDMETHODIMP SetTexture(LPCSTR name, ID3DWTexture *tex);
+  STDMETHODIMP LockTargets(ID3DWRenderTargetInternals *output);
+  STDMETHODIMP UnlockTargets();
+  STDMETHODIMP GetContext(ID3DWContext **oCtx);
+  STDMETHODIMP SetConstantBuffer(LPCSTR name, ID3DWConstantBuffer *constantBuffer);
+  STDMETHODIMP SetBuffer(LPCSTR name, ID3DWBuffer *buffer);
+  STDMETHODIMP SetTexture(LPCSTR name, ID3DWTexture *texture);
   STDMETHODIMP SetCubeMap(LPCSTR name, ID3DWCubeMap *cubeMap);
+  STDMETHODIMP SetSampler(LPCSTR name, ID3DWSampler *sampler);
 
 protected:  
   D3DWEffect();
 
-private:  
+private:
+  typedef enum _RV_TYPE
+  {
+    RVT_CONSTANT_BUFFER,
+    RVT_TEXTURE,
+    RVT_CUBE_MAP,
+    RVT_BUFFER,
+    RVT_SAMPLER
+  } RV_TYPE;
   struct ResourceVar
   {
-    UINT slot;
-    ComPtr<ID3DWTextureInternals> tex;
-    ComPtr<ID3D11ShaderResourceView> srv;
-    D3D11_SRV_DIMENSION dim;
+    RV_TYPE rvType;
+    UINT vsSlot;
+    UINT gsSlot;
+    UINT psSlot;
+    SIZE_T size;
+    ComPtr<IUnknown> internals;
+    ComPtr<IUnknown> resource;
   };
+  typedef std::map<std::string,ResourceVar*> ResourceMap;
+  typedef std::vector<ResourceVar*> ResourceVector;
+  typedef enum _S_TYPE
+  {
+    ST_VS,
+    ST_GS,
+    ST_PS
+  } S_TYPE;
+
   ComPtr<D3DWContext> _ctx;
   ComPtr<ID3D11Device> _device;
   ComPtr<ID3D11DeviceContext> _dc;
   ComPtr<ID3D11InputLayout> _layout;
   ComPtr<ID3D11VertexShader> _vs;
-  ComPtr<ID3D11ShaderReflection> _vsReflect;
-  std::vector<D3DWConstantBuffer*> _vsCbuffers;
-  std::vector<ResourceVar*> _vsRes;
   ComPtr<ID3D11GeometryShader> _gs;
-  ComPtr<ID3D11ShaderReflection> _gsReflect;
-  std::vector<D3DWConstantBuffer*> _gsCbuffers;
-  std::vector<ResourceVar*> _gsRes;
   ComPtr<ID3D11PixelShader> _ps;
-  ComPtr<ID3D11ShaderReflection> _psReflect;
-  std::vector<D3DWConstantBuffer*> _psCbuffers;
-  std::vector<ResourceVar*> _psRes;
-  std::map<std::string,D3DWConstantBuffer*> _allBuffers;
-  std::map<std::string,ResourceVar*> _allRes;
+  ResourceVector _vsRes;
+  ResourceVector _gsRes;
+  ResourceVector _psRes;
+  ResourceVector _allRes;
+  ResourceVector _renderTargets;
+  ResourceMap _constantBuffers;
+  ResourceMap _textures;
+  ResourceMap _cubeMaps;
+  ResourceMap _buffers;
+  ResourceMap _samplers;
 
   HRESULT InitFromMemory(LPCSTR data, SIZE_T size, LPCSTR vsEntry, LPCSTR gsEntry, LPCSTR psEntry, D3DWContext *ctx);
   HRESULT InitLayout(ID3DBlob *vsBytecode);
+  HRESULT InitResources(ID3DBlob *bytecode, S_TYPE sType);
   HRESULT CompileShader(LPCSTR data, SIZE_T size, LPCSTR entry, LPCSTR profile, ID3DBlob **oBytecode);
-  HRESULT InitCbuffers(
-    ID3D11ShaderReflection *reflect, std::vector<D3DWConstantBuffer*>& cbs, std::vector<ResourceVar*>& res);
   static HRESULT ReadFileIntoString(LPCWSTR filename, std::string& string);
 };
 

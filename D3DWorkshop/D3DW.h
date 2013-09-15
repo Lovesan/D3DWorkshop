@@ -4,10 +4,10 @@
 #include <windows.h>
 
 #define D3DW_MAJOR_VERSION 0
-#define D3DW_MINOR_VERSION 1
-#define D3DW_BUILD 1
-#define D3DW_REVISION 1
-#define D3DW_VERSION_STRING "0.1.1.1"
+#define D3DW_MINOR_VERSION 2
+#define D3DW_BUILD 0
+#define D3DW_REVISION 0
+#define D3DW_VERSION_STRING "0.2.0.0"
 
 #ifdef __cplusplus
 #define D3DW_EXTERN_C extern "C" extern
@@ -20,9 +20,11 @@ typedef interface ID3DWWindowEvents ID3DWWindowEvents;
 typedef interface ID3DWContext ID3DWContext;
 typedef interface ID3DWContextChild ID3DWContextChild;
 typedef interface ID3DWEffect ID3DWEffect;
+typedef interface ID3DWSampler ID3DWSampler;
 typedef interface ID3DWConstantBuffer ID3DWConstantBuffer;
 typedef interface ID3DWMesh ID3DWMesh;
 typedef interface ID3DWResource ID3DWResource;
+typedef interface ID3DWBuffer ID3DWBuffer;
 typedef interface ID3DWTexture ID3DWTexture;
 typedef interface ID3DWSurface ID3DWSurface;
 typedef interface ID3DWCubeMap ID3DWCubeMap;
@@ -44,6 +46,15 @@ typedef enum _D3DW_TOPOLOGY
   D3DW_TOPOLOGY_POINT
 } D3DW_TOPOLOGY;
 
+typedef enum _D3DW_TEXTURE_MODE
+{
+  D3DW_TEXTURE_MODE_WRAP,
+  D3DW_TEXTURE_MODE_MIRROR,
+  D3DW_TEXTURE_MODE_CLAMP,
+  D3DW_TEXTURE_MODE_BORDER,
+  D3DW_TEXTURE_MODE_MIRROR_ONCE
+} D3DW_TEXTURE_MODE;
+
 D3DW_EXTERN_C HRESULT WINAPI D3DWCreateWindow(
   UINT width, UINT height, INT x, INT y, HWND parent, ID3DWWindow **oWindow);
 
@@ -51,6 +62,7 @@ MIDL_INTERFACE("{AD5995AD-771B-4C29-86F8-237D6780BCC1}")
 ID3DWWindow : public IUnknown
 {
 public:
+  STDMETHOD(Render)() = 0;
   STDMETHOD(AddEventSink)(ID3DWWindowEvents *events) = 0;
   STDMETHOD(RemoveEventSink)(ID3DWWindowEvents *events) = 0;
   STDMETHOD(GetRenderMode)(BOOL *oRenderAlways, BOOL *oPauseOnResize) = 0;
@@ -106,9 +118,7 @@ public:
   STDMETHOD(GetWindow)(ID3DWWindow **oWindow) = 0;
   STDMETHOD(GetSize)(UINT *oWidth, UINT *oHeight) = 0;
   STDMETHOD(SetSize)(UINT width, UINT height) = 0;
-  STDMETHOD(GetAnisotropyLevel)(UINT *oLevel) = 0;
-  STDMETHOD(SetAnisotropyLevel)(UINT level) = 0;
-  STDMETHOD(Clear)(FLOAT clearColor[4]) = 0;
+  STDMETHOD(Clear)(const FLOAT clearColor[4]) = 0;
   STDMETHOD(ClearDepthStencil)() = 0;
   STDMETHOD(CreateEffectFromMemory)(
     LPCSTR data, SIZE_T size, LPCSTR vsEntry, LPCSTR gsEntry, LPCSTR psEntry, ID3DWEffect **oEffect) = 0;
@@ -116,6 +126,9 @@ public:
     LPCWSTR filename, LPCSTR vsEntry, LPCSTR gsEntry, LPCSTR psEntry, ID3DWEffect **oEffect) = 0;
   STDMETHOD(CreateEffectFromResource)(
     HMODULE module, LPCWSTR resourceName, LPCWSTR resourceType, LPCSTR vsEntry, LPCSTR gsEntry, LPCSTR psEntry, ID3DWEffect **oEffect) = 0;
+  STDMETHOD(CreateSampler)(
+    UINT anisotropyLevel, D3DW_TEXTURE_MODE addressMode, const FLOAT borderColor[4], ID3DWSampler **oSampler) = 0;
+  STDMETHOD(CreateConstantBuffer)(SIZE_T size, ID3DWConstantBuffer **oConstantBuffer) = 0;
   STDMETHOD(CreateTexture)(
     UINT width, UINT height, ID3DWTexture **oTex) = 0;
   STDMETHOD(CreateTextureFromMemory)(
@@ -133,7 +146,7 @@ public:
     ID3DWTexture *negZ,
     ID3DWCubeMap **oCubeMap) = 0;
   STDMETHOD(CreateMesh)(
-    LPVOID vertexData, SIZE_T vertexSize, UINT nVertices, UINT32 *indices, UINT nIndices, D3DW_TOPOLOGY topology, BOOL canMap, ID3DWMesh **oMesh) = 0;
+    LPVOID vertexData, SIZE_T vertexSize, UINT nVertices, UINT32 *indices, UINT nIndices, D3DW_TOPOLOGY topology, ID3DWMesh **oMesh) = 0;
   STDMETHOD(CreateFloatAnimation)(
     FLOAT begin, FLOAT end, FLOAT interval, BOOL repeat, BOOL autoReverse, ID3DWFloatAnimation **oAnimation) = 0;
 };
@@ -149,18 +162,11 @@ MIDL_INTERFACE("{5C5058C2-045A-4410-9B54-9E7862F38EB7}")
 ID3DWEffect : public ID3DWContextChild
 {
 public:
-  STDMETHOD(GetConstantBuffer)(LPCSTR name, ID3DWConstantBuffer **oCb) = 0;
-  STDMETHOD(SetTexture)(LPCSTR name, ID3DWTexture *tex) = 0;
-  STDMETHOD(SetCubeMap)(LPCSTR name, ID3DWCubeMap *tex) = 0;
-};
-
-MIDL_INTERFACE("{B51300F1-11A5-400C-ADC9-170AA15DCC26}")
-ID3DWConstantBuffer : public IUnknown
-{
-public:
-  STDMETHOD(GetEffect)(ID3DWEffect **oEffect) = 0;
-  STDMETHOD(GetSize)(SIZE_T *oSize) = 0;
-  STDMETHOD(Update)(LPVOID data, SIZE_T size) = 0;
+  STDMETHOD(SetConstantBuffer)(LPCSTR name, ID3DWConstantBuffer *constantBuffer) = 0;
+  STDMETHOD(SetBuffer)(LPCSTR name, ID3DWBuffer *buffer) = 0;
+  STDMETHOD(SetTexture)(LPCSTR name, ID3DWTexture *texture) = 0;
+  STDMETHOD(SetCubeMap)(LPCSTR name, ID3DWCubeMap *cubeMap) = 0;
+  STDMETHOD(SetSampler)(LPCSTR name, ID3DWSampler *sampler) = 0;
 };
 
 MIDL_INTERFACE("{A2F7DB23-F10C-49D3-9041-A190CA9D1E6A}")
@@ -171,6 +177,7 @@ public:
   STDMETHOD(GetVertexCount)(UINT *oCount) = 0;
   STDMETHOD(GetIndexCount)(UINT *oCount) = 0;
   STDMETHOD(Draw)(ID3DWEffect *effect) = 0;
+  STDMETHOD(DrawToBuffer)(ID3DWEffect *effect, ID3DWBuffer *buffer) = 0;
   STDMETHOD(DrawToSurface)(ID3DWEffect *effect, ID3DWSurface *surface) = 0;
   STDMETHOD(DrawToCubeMap)(ID3DWEffect *effect, ID3DWCubeMap *cubeMap) = 0;
   STDMETHOD(MapVertices)(LPVOID *oVertexData) = 0;
@@ -179,11 +186,36 @@ public:
   STDMETHOD(UnmapIndices)() = 0;
 };
 
+MIDL_INTERFACE("{9CB5922A-DD2C-430F-AAA2-B4B153298346}")
+ID3DWSampler : public ID3DWContextChild
+{
+public:
+  STDMETHOD(GetAnisotropyLevel)(UINT *oLevel) = 0;
+  STDMETHOD(SetAnisotropyLevel)(UINT level) = 0;
+  STDMETHOD(GetAddressMode)(D3DW_TEXTURE_MODE *oMode) = 0;
+  STDMETHOD(SetAddressMode)(D3DW_TEXTURE_MODE mode) = 0;
+  STDMETHOD(GetBorderColor)(FLOAT oColor[4]) = 0;
+  STDMETHOD(SetBorderColor)(const FLOAT color[4]) = 0;
+};
+
 MIDL_INTERFACE("{A21D8127-AAB7-428F-93F0-0D001D640594}")
 ID3DWResource : public ID3DWContextChild
 {
 public:
   STDMETHOD(GetByteSize)(SIZE_T *oSize) = 0;
+};
+
+MIDL_INTERFACE("{B51300F1-11A5-400C-ADC9-170AA15DCC26}")
+ID3DWConstantBuffer : public ID3DWResource
+{
+public:
+  STDMETHOD(Update)(LPVOID data, SIZE_T size) = 0;
+};
+
+MIDL_INTERFACE("{30783E9F-5F05-4544-82F1-866A872D9F63}")
+ID3DWBuffer : public ID3DWResource
+{
+public:
 };
 
 MIDL_INTERFACE("{A73D00D0-AD75-455A-BFCC-C8D437D9FADE}")
@@ -202,7 +234,7 @@ public:
   STDMETHOD(GetSize)(UINT *oWidth, UINT *oHeight) = 0;
   STDMETHOD(BeginDraw)() = 0;
   STDMETHOD(EndDraw)() = 0;
-  STDMETHOD(Clear)(FLOAT clearColor[4]) = 0;
+  STDMETHOD(Clear)(const FLOAT clearColor[4]) = 0;
   STDMETHOD(ClearDepthStencil)() = 0;
 };
 
@@ -211,7 +243,7 @@ ID3DWCubeMap : public ID3DWResource
 {
 public:  
   STDMETHOD(GetSideSize)(UINT *oSize) = 0;
-  STDMETHOD(Clear)(FLOAT clearColor[4]) = 0;
+  STDMETHOD(Clear)(const FLOAT clearColor[4]) = 0;
   STDMETHOD(ClearDepthStencil)() = 0;
 };
 

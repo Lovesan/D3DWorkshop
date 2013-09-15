@@ -8,6 +8,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "D3DWTriangleExample", "D3DW
 		{2603830D-611C-4605-A370-F26D1E6DF12D} = {2603830D-611C-4605-A370-F26D1E6DF12D}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "D3DWDrawToSurfaceExample", "D3DWDrawToSurfaceExample\D3DWDrawToSurfaceExample.vcxproj", "{9D3F6BC9-45E5-4AD3-B460-050C11A7E3AA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2603830D-611C-4605-A370-F26D1E6DF12D} = {2603830D-611C-4605-A370-F26D1E6DF12D}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -22,6 +27,10 @@ Global
 		{1C72073C-33B0-414A-A0CB-9865FB7F1799}.Debug|Win32.Build.0 = Debug|Win32
 		{1C72073C-33B0-414A-A0CB-9865FB7F1799}.Release|Win32.ActiveCfg = Release|Win32
 		{1C72073C-33B0-414A-A0CB-9865FB7F1799}.Release|Win32.Build.0 = Release|Win32
+		{9D3F6BC9-45E5-4AD3-B460-050C11A7E3AA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{9D3F6BC9-45E5-4AD3-B460-050C11A7E3AA}.Debug|Win32.Build.0 = Debug|Win32
+		{9D3F6BC9-45E5-4AD3-B460-050C11A7E3AA}.Release|Win32.ActiveCfg = Release|Win32
+		{9D3F6BC9-45E5-4AD3-B460-050C11A7E3AA}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
