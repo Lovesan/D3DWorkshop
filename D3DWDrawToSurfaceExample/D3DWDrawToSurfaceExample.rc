@@ -35,7 +35,7 @@ BEGIN
             VALUE "FileDescription", "Direct3D Workshop draw to surface example\0"
             VALUE "FileVersion", D3DW_VERSION_STRING
             VALUE "InternalName", "D3DWDrawToSurfaceExample\0"
-            VALUE "LegalCopyright", "Copyright © 2012, Dmitry Ignatiev <lovesan.ru at gmail.com>\0"
+            VALUE "LegalCopyright", "Copyright Â© 2012-2013, Dmitry Ignatiev <lovesan.ru at gmail.com>\0"
             VALUE "OriginalFilename", "D3DWDrawToSurfaceExample.exe\0"
             VALUE "ProductName", "Direct3D Workshop draw to surface example\0"
             VALUE "ProductVersion", D3DW_VERSION_STRING

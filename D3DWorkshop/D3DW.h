@@ -6,8 +6,8 @@
 #define D3DW_MAJOR_VERSION 0
 #define D3DW_MINOR_VERSION 2
 #define D3DW_BUILD 0
-#define D3DW_REVISION 0
-#define D3DW_VERSION_STRING "0.2.0.0"
+#define D3DW_REVISION 1
+#define D3DW_VERSION_STRING "0.2.0.1"
 
 #ifdef __cplusplus
 #define D3DW_EXTERN_C extern "C" extern
@@ -110,6 +110,30 @@ public:
   STDMETHOD(OnGotFocus)() = 0;
   STDMETHOD(OnLostFocus)() = 0;
 };
+
+#ifdef __cplusplus
+class __declspec(novtable) ID3DWWindowEventsImpl : public ID3DWWindowEvents
+{
+public:
+	STDMETHODIMP OnLoaded() { return S_OK; }
+	STDMETHODIMP OnClosed() { return S_OK; }
+	STDMETHODIMP OnResize(UINT, UINT) { return S_OK; }
+	STDMETHODIMP OnRender() { return S_OK; }
+	STDMETHODIMP OnKeyDown(DWORD) { return S_OK; }
+	STDMETHODIMP OnKeyUp(DWORD) { return S_OK; }
+	STDMETHODIMP OnMouseDown(INT, INT, D3DW_MOUSE_BUTTON) { return S_OK; }
+	STDMETHODIMP OnMouseUp(INT, INT, D3DW_MOUSE_BUTTON) { return S_OK; }
+	STDMETHODIMP OnMouseDoubleClick(INT, INT, D3DW_MOUSE_BUTTON) { return S_OK; }
+	STDMETHODIMP OnMouseEnter(INT, INT) { return S_OK; }
+	STDMETHODIMP OnMouseMove(INT, INT) { return S_OK; }
+	STDMETHODIMP OnMouseLeave(INT, INT) { return S_OK; }
+	STDMETHODIMP OnMouseWheel(INT, INT, INT) { return S_OK; }
+	STDMETHODIMP OnGotCapture(INT, INT) { return S_OK; }
+	STDMETHODIMP OnLostCapture(INT, INT) { return S_OK; }
+	STDMETHODIMP OnGotFocus() { return S_OK; }
+	STDMETHODIMP OnLostFocus() { return S_OK; }
+};
+#endif
 
 MIDL_INTERFACE("{06FD722D-60BF-4F54-9593-9D9ECF2E2360}")
 ID3DWContext : public IUnknown

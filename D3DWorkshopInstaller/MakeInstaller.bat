@@ -1,4 +1,4 @@
-@set D3DW_VERSION=0.2.0.0
+@set D3DW_VERSION=0.2.0.1
 
 @if not exist Tmp goto makedir
 @del /S /F /Q Tmp

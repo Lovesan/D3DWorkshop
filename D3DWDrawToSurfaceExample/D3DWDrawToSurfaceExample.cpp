@@ -52,7 +52,7 @@ private:
 };
 
 class COM_NO_VTABLE D3DWDrawToSurfaceExample
-  : public ID3DWWindowEvents
+  : public ID3DWWindowEventsImpl
 {
 public:
   BEGIN_INTERFACE_MAP
@@ -84,10 +84,6 @@ public:
   {
     return _wnd->ShowDialog();
   }
-
-  STDMETHODIMP OnLoaded() { return S_OK; }
-
-  STDMETHODIMP OnClosed() { return S_OK; }
 
   STDMETHODIMP OnResize(UINT width, UINT height)
   {
@@ -130,9 +126,7 @@ public:
 
     return S_OK;
   }
-
-  STDMETHODIMP OnKeyDown(DWORD vkKey) { return S_OK; }
-
+  
   STDMETHODIMP OnKeyUp(DWORD vkKey)
   {
     HRESULT hr;
@@ -149,29 +143,7 @@ public:
     }
     return S_OK;
   }
-
-  STDMETHODIMP OnMouseDown(INT x, INT y, D3DW_MOUSE_BUTTON button) { return S_OK; }
-
-  STDMETHODIMP OnMouseUp(INT x, INT y, D3DW_MOUSE_BUTTON button) { return S_OK; }
-
-  STDMETHODIMP OnMouseDoubleClick(INT x, INT y, D3DW_MOUSE_BUTTON button) { return S_OK; }
-
-  STDMETHODIMP OnMouseEnter(INT x, INT y) { return S_OK; }
-
-  STDMETHODIMP OnMouseMove(INT x, INT y) { return S_OK; }
-
-  STDMETHODIMP OnMouseLeave(INT x, INT y) { return S_OK; }
-
-  STDMETHODIMP OnMouseWheel(INT x, INT y, INT delta) { return S_OK; }
-
-  STDMETHODIMP OnGotCapture(INT x, INT y) { return S_OK; }
-
-  STDMETHODIMP OnLostCapture(INT x, INT y) { return S_OK; } 
-
-  STDMETHODIMP OnGotFocus() { return S_OK; }
-
-  STDMETHODIMP OnLostFocus() { return S_OK; } 
-
+  
 protected:
   D3DWDrawToSurfaceExample() { }
   

@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0"
 	xmlns:asmv3="urn:schemas-microsoft-com:asm.v3">
     <assemblyIdentity
-	    version="0.2.0.0"
+	    version="0.2.0.1"
 	    processorArchitecture="x86"
 	    name="D3DWDrawToSurfaceExampled"
 	    type="win32"
@@ -19,7 +19,7 @@
   <dependency>
     <dependentAssembly>
         <assemblyIdentity
-	        version="0.2.0.0"
+	        version="0.2.0.1"
 	        processorArchitecture="x86"
 	        name="D3DWd"
 	        type="win32"
